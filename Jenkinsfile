@@ -17,12 +17,20 @@ pipeline {
         }
 
       
+        stage('Packaging/Pushing imagae') {
 
+            steps {
+                withDockerRegistry(credentialsId: 'dockerhub', url: 'https://index.docker.io/v1/') {
+                    sh 'docker build -t datdo2712003/springboot .'
+                    sh 'docker push datdo2712003/springboot'
+                }
+            }
+        }
         stage('Deploy Spring Boot to DEV') {
             steps {
                 echo 'Deploying and cleaning'
                 sh 'docker image pull datdo2712003/springboot'
-                sh 'docker container stop khalid-springboot || echo "this container does not exist" '
+                sh 'docker container stop springboot-container || echo "this container does not exist" '
                 sh 'docker network create dev || echo "this network exists"'
                 sh 'echo y | docker container prune '
 
