@@ -19,7 +19,7 @@ pipeline {
         }
 
       
-        stage('Packaging/Pushing image') {
+        stage('Packaging/Pushing imagae') {
 
             steps {
                 withDockerRegistry(credentialsId: 'Dockerhub', url: 'https://index.docker.io/v1/') {
