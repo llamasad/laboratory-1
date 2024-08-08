@@ -10,6 +10,8 @@ pipeline {
 
         stage('Build with Maven') {
             steps {
+                sh 'ls -l'
+
                 sh 'mvn --version'
                 sh 'java -version'
                 sh 'mvn clean package -Dmaven.test.failure.ignore=true'
