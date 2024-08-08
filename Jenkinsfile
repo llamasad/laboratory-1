@@ -17,10 +17,10 @@ pipeline {
         }
 
       
-        stage('Packaging/Pushing imagae') {
+        stage('Packaging/Pushing image') {
 
             steps {
-                withDockerRegistry(credentialsId: 'dockerhub', url: 'https://index.docker.io/v1/') {
+                withDockerRegistry(credentialsId: 'Dockerhub', url: 'https://index.docker.io/v1/') {
                     sh 'docker build -t datdo2712003/springboot .'
                     sh 'docker push datdo2712003/springboot'
                 }
