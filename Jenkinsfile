@@ -10,7 +10,7 @@ pipeline {
 
         stage('Build with Maven') {
             steps {
-                sh 'ls -l'
+                sh 'ls -la'
 
                 sh 'mvn --version'
                 sh 'java -version'
