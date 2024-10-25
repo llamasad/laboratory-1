@@ -1,0 +1,32 @@
+FROM jenkins/jenkins:lts
+
+# Switch to root user to perform installations
+USER root
+
+# Install Docker CLI
+RUN apt-get update && \
+    apt-get install -y docker.io
+
+# Check if docker group already exists, if not create it
+RUN getent group docker || groupadd -g 999 docker && \
+    usermod -aG docker jenkins
+
+# Ensure tini is installed
+RUN apt-get install -y tini
+
+# Install Python and venv
+RUN apt-get update && \
+    apt-get install -y python3 python3-venv
+
+# Create a virtual environment and install Ansible
+RUN python3 -m venv /opt/ansible-venv && \
+    /opt/ansible-venv/bin/pip install ansible
+
+# Add virtual environment to PATH
+ENV PATH="/opt/ansible-venv/bin:$PATH"
+
+# Switch back to Jenkins user
+USER jenkins
+
+# Start Jenkins
+ENTRYPOINT ["/usr/bin/tini", "--", "/usr/local/bin/jenkins.sh"]

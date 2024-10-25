@@ -23,20 +23,29 @@ pipeline {
 
             steps {
                 withDockerRegistry(credentialsId: 'Dockerhub', url: 'https://index.docker.io/v1/') {
-                    sh 'docker build -t datdo27122003/springboot .'
+                    sh 'docker build -t datdo27122003/springboot -f Dockerfile.build .'
                     sh 'docker push datdo27122003/springboot'
                 }
             }
         }
-        stage('Deploy Spring Boot to DEV') {
-            steps {
-                echo 'Deploying and cleaning'
-                sh 'docker image pull datdo27122003/springboot'
-                sh 'docker container stop springboot-container || echo "this container does not exist" '
-                sh 'docker network create dev || echo "this network exists"'
-                sh 'echo y | docker container prune '
+        stage('Deploy container') {
 
-                sh 'docker container run -d --rm --name springboot-container -p 8081:8080 --network dev datdo27122003/springboot'
+            steps {
+                withCredentials([file(credentialsId: 'main_key_pair', variable: 'main_key_pair')]) {
+                    sh 'ls -la'
+                    sh """
+                    if [ -f "main_key_pair.pem" ]; then
+                        echo "File exists: main_key_pair"
+                    else
+                        cp "$MAIN_KEY_PAIR" main_key_pair.pem
+                        chmod 400 main_key_pair.pem
+                    fi
+                    """
+                    sh 'ansible --version'
+                    sh 'ls -la'
+                    sh 'chmod 400 main_key_pair '
+                    sh 'ansible-playbook -i inventory.ini --private-key main_key_pair.pem playbook.yml -vvvv'
+                }
             }
         }
  
