@@ -9,3 +9,4 @@ COPY target/spring-boot-2-hello-world-1.0.2-SNAPSHOT.jar /app/app.jar
 
 # Set the entry point to run the JAR
 ENTRYPOINT ["java", "-jar", "app.jar"]
+#
