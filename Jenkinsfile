@@ -43,6 +43,7 @@ pipeline {
                     """
                     sh 'ansible --version'
                     sh 'ls -la'
+                    sh 'ansible -i inventory.ini hosts -m ping --private-key main_key_pair.pem'
                     sh 'ansible-playbook -i inventory.ini --private-key main_key_pair.pem playbook.yml -vvvv'
                 }
             }
